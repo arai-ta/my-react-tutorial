@@ -42,6 +42,25 @@ class Board extends React.Component {
   }
 }
 
+function HistoryList(props) {
+  const moves   = props.history.map((step, move) => {
+    const select = step.select;
+    const desc = move ?
+      'Go to move #' + move + ' (' + select[0] + ',' + select[1] + ')' :
+      'Go to game start';
+    const style = {
+      fontWeight: (move === props.current ? 'bold' : '')
+    }
+    return (
+      <li key={move}>
+        <button onClick={() => props.handler(move)} style={style}>{desc}</button>
+      </li>
+    );
+  });
+
+  return <ol>{moves}</ol>;
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -88,17 +107,6 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner  = calculateWinner(current.squares);
-    const moves   = history.map((step, move) => {
-      const select = step.select;
-      const desc = move ?
-        'Go to move #' + move + ' (' + select[0] + ',' + select[1] + ')' :
-        'Go to game start';
-      return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
 
     let status;
     if (winner) {
@@ -117,7 +125,11 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <HistoryList
+             history={history}
+             handler={(i) => this.jumpTo(i)}
+             current={this.state.stepNumber}
+          />
         </div>
       </div>
     );
