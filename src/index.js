@@ -32,8 +32,8 @@ class Board extends React.Component {
   }
 
   render() {
-    const rowNum = 3,
-          colNum = 3;
+    const rowNum = this.props.rowNum,
+          colNum = this.props.colNum;
 
     const rows = Array.from({length:rowNum}, (v,k) => k).map(
       (row) => this.renderRow(row * colNum, colNum)
@@ -67,11 +67,15 @@ function HistoryList(props) {
 }
 
 class Game extends React.Component {
+
+  get row() { return 3; }
+  get col() { return 3; }
+
   constructor(props) {
     super(props);
     this.state = {
       history: [{
-        squares: Array(9).fill(null),
+        squares: Array(this.row * this.col).fill(null),
         select: [],
       }],
       stepNumber: 0,
@@ -126,6 +130,8 @@ class Game extends React.Component {
           <Board
             squares={current.squares}
             handler={(i) => this.handleClick(i)}
+            rowNum={this.row}
+            colNum={this.col}
           />
         </div>
         <div className="game-info">
